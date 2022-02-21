@@ -1,0 +1,8 @@
+def SpeedOfCart(MMan,NumPpl,MCart,RelVel):
+    n = NumPpl
+    v = -MMan * RelVel / (MCart + (n-1)*MMan)
+    while n >= 0:
+        v = v - (MMan*RelVel/(MCart + (n-2)*MMan))
+        n = n - 1
+    return print(v)
+SpeedOfCart(0.01,10000,100,20)
