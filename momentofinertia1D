@@ -1,0 +1,14 @@
+
+def MomentOfInertia(dens, leng, n):
+    step = n
+    width = leng/step
+    MOI = 0
+    m = 0
+    x = leng/step
+    while m <= n :
+        x = m * width
+        MOI = MOI + dens*(x**2)*width
+        m = m+1
+    return print(MOI)
+
+MomentOfInertia(1, 1, 1000000)
