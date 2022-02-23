@@ -1,0 +1,15 @@
+def function(x):
+    return x**2
+def Slope(max, min, function, n):
+    width = (max - min)/n
+    list = []
+    x = min
+    while n>=0 :
+        grad = (function(x + width) - function(x))/width
+        list.append(grad)
+        x = x + width
+        n = n - 1
+    return print(min(list))
+        
+    
+Slope(5, 1, function, 0.5)
