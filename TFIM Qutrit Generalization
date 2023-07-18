@@ -1,0 +1,40 @@
+# import numpy as np
+
+# Define the matrices
+omega = np.exp(2j * np.pi / 3)
+Z1 = Z2 = np.array([[1, 0, 0], [0, omega, 0], [0, 0, omega**2]])
+X1 = np.array([[0, 0, 1], [1, 0, 0], [0, 1, 0]])
+H1 = 1/np.sqrt(3) * np.array([[1, 1, 1], [1, omega, omega**2], [1, omega**2, omega**4]])
+Id = np.eye(3)
+
+CZ = 1/np.sqrt(3) * np.array([[1, 0, 0, 0, 0, 0, 0, 0, 0], 
+               [0, 1, 0, 0, 0, 0, 0, 0, 0], 
+               [0, 0, 1, 0, 0, 0, 0, 0, 0], 
+               [0, 0, 0, omega, 0, 0, 0, 0, 0], 
+               [0, 0, 0, 0, 1, 0, 0, 0, 0], 
+               [0, 0, 0, 0, 0, omega, 0, 0, 0], 
+               [0, 0, 0, 0, 0, 0, omega**2, 0, 0], 
+               [0, 0, 0, 0, 0, 0, 0, omega, 0], 
+               [0, 0, 0, 0, 0, 0, 0, 0, omega**4]])
+
+H = np.kron(H1, Id)
+Z = np.kron(Id, Z2)
+
+# Compute the product of the matrices
+U = CZ @ H @ Z @ CZ
+
+# Normalize U
+norm_U = np.linalg.norm(U)
+U_normalized = U / norm_U
+
+# Compute U_target
+U_target = 1/np.sqrt(3) * (np.kron(Z1, Z2) + np.kron(X1, Id))
+
+# Normalize U_target
+norm_U_target = np.linalg.norm(U_target)
+U_target_normalized = U_target / norm_U_target
+
+# Compute the difference between U_normalized and U_target_normalized
+diff = np.linalg.norm(U_normalized - U_target_normalized)
+
+print(diff)
