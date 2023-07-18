@@ -8,7 +8,7 @@ from numpy.linalg import eig
 n = 8
 l = 1
 k = n-l
-m = 1
+m = 190
 PBC = False
 
 # # Kronecker product between two Pauli operators
@@ -26,7 +26,7 @@ fixed = qt.qeye(1)
 for i in range(k):
     fixed = qt.tensor(fixed,plus)
 
-    
+
 inchannel = qt.tensor(qt.qeye(2**l), fixed)
 inchannel = np.array(inchannel)
 print(inchannel)
@@ -77,8 +77,8 @@ for layers in range(m):
         if i+1 <= n:
             outchannel = outchannel * (z(i)*z(i+1)+x(i))
 
-        
-        
+
+
 print('This is the unitary transformation produced by the encoding')
 print(outchannel)
 
@@ -108,7 +108,7 @@ def outcome(string):
         if i == '1':
             state = qt.tensor(state, minus)
     return state
-                
+
 born = []
 for string in binary_strings:
     born.append(outcome(string))
@@ -127,7 +127,10 @@ for outcome in born:
 
     print('this is the net effect of the channel. we want to check that the eigenvalues are all norm 1 so its confirm unitary')
     # Multiply the matrices
-    channel = np.dot(measure_outcomes, pre_measure)/sqrt(2**(n))
+    eigenvalues, _ = np.linalg.eig(channel)
+    first_eigenvalue = eigenvalues[0]
+    norm = np.linalg.norm(first_eigenvalue)
+    channel = channel/norm
     w,v=eig(channel)
     rounded_eigenvalues = np.around(w, decimals=5)
     print('E-value:', rounded_eigenvalues)
