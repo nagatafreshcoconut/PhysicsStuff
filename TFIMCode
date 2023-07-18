@@ -5,10 +5,10 @@ import math
 from numpy.linalg import eig
 
 #n is number of qubits, l is number of qubits teleported, m is number of layers of encoding
-n = 8
-l = 1
+n = 10
+l = 5
 k = n-l
-m = 190
+m = 5
 PBC = False
 
 # # Kronecker product between two Pauli operators
@@ -117,7 +117,6 @@ print('the size of list should decrease as you teleport more qubits because you 
 print(born)
 
 for outcome in born:
-    #you need to iterate over outcomes, dont forget. this is just fixing over one case
     outcome = qt.tensor(outcome , qt.qeye(2**l))
     outcome = qt.dag(outcome)
     print('this is the measurement combined with identity on the spots where we didnt measure - we want to teleport those')
@@ -125,14 +124,11 @@ for outcome in born:
     measure_outcomes = np.array(outcome)
     print(measure_outcomes)
 
-    print('this is the net effect of the channel. we want to check that the eigenvalues are all norm 1 so its confirm unitary')
+    print('this is the net effect of the channel. we want to check that the eigenvalues are all norm 1 after normalization so its confirm unitary')
     # Multiply the matrices
-    eigenvalues, _ = np.linalg.eig(channel)
-    first_eigenvalue = eigenvalues[0]
-    norm = np.linalg.norm(first_eigenvalue)
-    channel = channel/norm
+    channel = measure_outcomes @ pre_measure
     w,v=eig(channel)
-    rounded_eigenvalues = np.around(w, decimals=5)
+    rounded_eigenvalues = np.around(w/norm, decimals=5)
     print('E-value:', rounded_eigenvalues)
     for eigval in rounded_eigenvalues:
         if eigval == 0.+0.j :
