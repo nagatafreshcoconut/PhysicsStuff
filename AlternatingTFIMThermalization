@@ -14,7 +14,7 @@ def construct_hamiltonian(n, J, h):
     """Constructs the time-dependent Hamiltonian for n qubits."""
     sz = sigmaz()
     sx = sigmax()
-    
+
     H_even = 0
     H_odd = 0
 
@@ -29,7 +29,7 @@ def construct_hamiltonian(n, J, h):
         H_odd -= J * tensor([sz if j == i or j == i + 1 else qeye(2) for j in range(n)])
     for i in range(1, n, 2):
         H_odd -= h * tensor([sx if j == i else qeye(2) for j in range(n)])
-    
+
     # Time-dependent Hamiltonian
     H = [[H_odd, odd_time], [H_even, even_time]]
 
@@ -44,14 +44,14 @@ def compute_reduced_density_matrix(state, subsystem_indices):
     return state.ptrace(subsystem_indices)
 
 # Parameters
-n = 14  # Number of qubits
+n = 16  # Number of qubits
 J = 1.0
 h = 1.0
-tlist = np.linspace(0, 20, 20)
+steps = 20 #number of time steps simulated, divide by 2 to get the number of unitary rounds encoded
+tlist = np.linspace(0, steps, steps)
 
 # Construct Hamiltonian
 H = construct_hamiltonian(n, J, h)
-
 
 # Initial state (Here, all spins down)
 psi0 = tensor([basis(2, 0) for _ in range(n)])
@@ -60,7 +60,7 @@ psi0 = tensor([basis(2, 0) for _ in range(n)])
 result = evolve_system(H, psi0, tlist)
 
 # Subsystem of interest (e.g., qubits 1 to 3 for a 4 qubit system)
-subsystem_indices = [3,4]
+subsystem_indices = [7,8,9]
 
 # Calculate reduced density matrix for the subsystem at all time steps
 rho_reduced_list = [compute_reduced_density_matrix(state, subsystem_indices) for state in result.states]
@@ -72,7 +72,7 @@ entropy_list = [entropy_vn(rho) for rho in rho_reduced_list]
 for i, entropy in enumerate(entropy_list):
     print(f"Time step {i}: Von Neumann Entropy = {entropy}")
 
-time = [i for i in range(20)]    
+time = [i for i in range(steps)]    
 
 
 # Plotting the entanglement entropy
